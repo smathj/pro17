@@ -38,7 +38,7 @@ request.setCharacterEncoding("UTF-8");
    </tr>
 
 <c:choose>
-    <c:when test="${ empty membersList}" >
+    <c:when test="${ empty membersList}" >			<%--회원이 1명도 없을때 --%>
       <tr>
         <td colspan="5" align="center">
           <b>등록된 회원이 없습니다.</b>

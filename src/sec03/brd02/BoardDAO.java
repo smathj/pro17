@@ -84,6 +84,7 @@ public class BoardDAO {
 	public void insertNewArticle(ArticleVO article) {
 		try {
 			conn = dataFactory.getConnection();
+			
 			int articleNO = getNewArticleNO();
 			int parentNO = article.getParentNO();
 			String title = article.getTitle();
@@ -93,13 +94,16 @@ public class BoardDAO {
 			String query = "INSERT INTO t_board (articleNO, parentNO, title, content, imageFileName, id)"
 					+ " VALUES (?, ? ,?, ?, ?, ?)";
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
+			
 			pstmt.setInt(1, articleNO);
 			pstmt.setInt(2, parentNO);
 			pstmt.setString(3, title);
 			pstmt.setString(4, content);
 			pstmt.setString(5, imageFileName);
 			pstmt.setString(6, id);
+			
 			pstmt.executeUpdate();
 			pstmt.close();
 			conn.close();

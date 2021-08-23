@@ -12,15 +12,21 @@
 <title>글쓰기창</title>
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
-   function readURL(input) {
+   
+   
+   //미리 보기 함수
+   function readURL(input) {					
+	   
       if (input.files && input.files[0]) {
 	      var reader = new FileReader();
 	      reader.onload = function (e) {
-	        $('#preview').attr('src', e.target.result);
+	        $('#preview').attr('src', e.target.result); // src속성 바꾸는거 같음
           }
          reader.readAsDataURL(input.files[0]);
       }
   }  
+  
+  // 목록 가는 함수 
   function backToList(obj){
     obj.action="${contextPath}/board/listArticles.do";
     obj.submit();
@@ -43,7 +49,7 @@
      </tr>
      <tr>
         <td align="right">이미지파일 첨부:  </td>
-	     <td> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td>
+	     <td> <input type="file" name="imageFileName"  onchange="readURL(this);" /></td> <%-- readURL 함수 --%>
          <td><img  id="preview" src="#"   width=200 height=200/></td>
 	 </tr>
 	 <tr>

@@ -25,77 +25,93 @@ import org.apache.commons.io.FileUtils;
 /**
  * Servlet implementation class BoardController
  */
+@SuppressWarnings("serial")
 //@WebServlet("/board/*")
 public class BoardController extends HttpServlet {
 	private static String ARTICLE_IMAGE_REPO = "C:\\board\\article_image";
 	BoardService boardService;
 	ArticleVO articleVO;
 
-	/**
-	 * @see Servlet#init(ServletConfig)
-	 */
+
 	public void init(ServletConfig config) throws ServletException {
 		boardService = new BoardService();
 		articleVO = new ArticleVO();
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doHandle(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		doHandle(request, response);
 	}
 
 	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		String nextPage = "";
+		
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html; charset=utf-8");
+		
 		String action = request.getPathInfo();
 		System.out.println("action:" + action);
+		
 		try {
 			List<ArticleVO> articlesList = new ArrayList<ArticleVO>();
 			if (action == null) {
 				articlesList = boardService.listArticles();
 				request.setAttribute("articlesList", articlesList);
 				nextPage = "/board02/listArticles.jsp";
+			
+				
 			} else if (action.equals("/listArticles.do")) {
 				articlesList = boardService.listArticles();
 				request.setAttribute("articlesList", articlesList);
 				nextPage = "/board02/listArticles.jsp";
+			
 			} else if (action.equals("/articleForm.do")) {
 				nextPage = "/board02/articleForm.jsp";
+			
+				
 			} else if (action.equals("/addArticle.do")) {
+				
 				int articleNO=0;
 				Map<String, String> articleMap = upload(request, response);
+				
 				String title = articleMap.get("title");
 				String content = articleMap.get("content");
 				String imageFileName = articleMap.get("imageFileName");
+				
 				articleVO.setParentNO(0);
 				articleVO.setId("hong");
 				articleVO.setTitle(title);
 				articleVO.setContent(content);
 				articleVO.setImageFileName(imageFileName);
-				articleNO= boardService.addArticle(articleVO);
 				
+				articleNO= boardService.addArticle(articleVO);	// í…Œì´ë¸”ì— ìƒˆê¸€ ì¶”ê°€, ìƒˆê¸€ì˜ ê¸€ë²ˆí˜¸ ë¦¬í„´
+				
+				// íŒŒì¼ ì²¨ë¶€ í–ˆì„ë–„
 				if(imageFileName!=null && imageFileName.length()!=0) {
-				    File srcFile = new 	File(ARTICLE_IMAGE_REPO +"\\"+"temp"+"\\"+imageFileName);
+				    
+					// temp í´ë”ì— ì„ì‹œë¡œ ì—…ë¡œë“œëœ íŒŒì¼ ê°ì²´ë¥¼ ìƒì„±
+					File srcFile = new 	File(ARTICLE_IMAGE_REPO +"\\"+"temp"+"\\"+imageFileName);
+					
 					File destDir = new File(ARTICLE_IMAGE_REPO +"\\"+articleNO);
+					
+					// í´ë” ìƒì„±
 					destDir.mkdirs();
+					
+					// temp í´ë”ì˜ íŒŒì¼ì„ ê¸€ ë²ˆí˜¸ë¥¼ ì´ë¦„ìœ¼ë¡œ í•˜ëŠ” í´ë”ë¡œ ì´ë™
 					FileUtils.moveFileToDirectory(srcFile, destDir, true);
+					
 				}
+				
 				PrintWriter pw = response.getWriter();
 				pw.print("<script>" 
-				         +"  alert('»õ±ÛÀ» Ãß°¡Çß½À´Ï´Ù.');" 
+				         +"  alert('ìƒˆê¸€ì„ ì¶”ê°€í–ˆìŠµë‹ˆë‹¤.');" 
 						 +" location.href='"+request.getContextPath()+"/board/listArticles.do';"
 				         +"</script>");
 
@@ -106,41 +122,54 @@ public class BoardController extends HttpServlet {
 
 			RequestDispatcher dispatch = request.getRequestDispatcher(nextPage);
 			dispatch.forward(request, response);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	private Map<String, String> upload(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		Map<String, String> articleMap = new HashMap<String, String>();
+		
 		String encoding = "utf-8";
 		File currentDirPath = new File(ARTICLE_IMAGE_REPO);
+		
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		factory.setRepository(currentDirPath);
 		factory.setSizeThreshold(1024 * 1024);
 		ServletFileUpload upload = new ServletFileUpload(factory);
+		
 		try {
 			List items = upload.parseRequest(request);
+			
 			for (int i = 0; i < items.size(); i++) {
 				FileItem fileItem = (FileItem) items.get(i);
+				
 				if (fileItem.isFormField()) {
 					System.out.println(fileItem.getFieldName() + "=" + fileItem.getString(encoding));
 					articleMap.put(fileItem.getFieldName(), fileItem.getString(encoding));
 				} else {
-					System.out.println("ÆÄ¶ó¹ÌÅÍ¸í:" + fileItem.getFieldName());
-					//System.out.println("ÆÄÀÏ¸í:" + fileItem.getName());
-					System.out.println("ÆÄÀÏÅ©±â:" + fileItem.getSize() + "bytes");
+					
+					System.out.println("ï¿½Ä¶ï¿½ï¿½ï¿½Í¸ï¿½:" + fileItem.getFieldName());
+					//System.out.println("ï¿½ï¿½ï¿½Ï¸ï¿½:" + fileItem.getName());
+					System.out.println("ï¿½ï¿½ï¿½ï¿½Å©ï¿½ï¿½:" + fileItem.getSize() + "bytes");
 					//articleMap.put(fileItem.getFieldName(), fileItem.getName());
+					
 					if (fileItem.getSize() > 0) {
 						int idx = fileItem.getName().lastIndexOf("\\");
 						if (idx == -1) {
 							idx = fileItem.getName().lastIndexOf("/");
 						}
-
+						
+						// ì²¨ë¶€í•œ íŒŒì¼ì„ ë¨¼ì € temp í´ë”ì— ì—…ë¡œë“œí•œë‹¤
 						String fileName = fileItem.getName().substring(idx + 1);
-						System.out.println("ÆÄÀÏ¸í:" + fileName);
-						articleMap.put(fileItem.getFieldName(), fileName);  //ÀÍ½ºÇÃ·Î·¯¿¡¼­ ¾÷·Îµå ÆÄÀÏÀÇ °æ·Î Á¦°Å ÈÄ map¿¡ ÆÄÀÏ¸í ÀúÀå
+						System.out.println("ï¿½ï¿½ï¿½Ï¸ï¿½:" + fileName);
+						
+						articleMap.put(fileItem.getFieldName(), fileName);  //ï¿½Í½ï¿½ï¿½Ã·Î·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ mapï¿½ï¿½ ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½
+						
 						File uploadFile = new File(currentDirPath + "\\temp\\" + fileName);
+						
 						fileItem.write(uploadFile);
 
 					} // end if

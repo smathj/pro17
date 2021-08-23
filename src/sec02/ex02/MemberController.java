@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Servlet implementation class MemberController
  */
-/*@WebServlet("/member/*")*/
+@WebServlet("/member/*")
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	MemberDAO memberDAO;
@@ -40,15 +40,20 @@ public class MemberController extends HttpServlet {
 	}
 
 	private void doHandle(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
+		
 		String nextPage = null;
+		
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
+		
 		String action = request.getPathInfo();
 		System.out.println("action:" + action);
+		
 		if (action == null || action.equals("/listMembers.do")) {
 			List<MemberVO> membersList = memberDAO.listMembers();
 			request.setAttribute("membersList", membersList);
 			nextPage = "/test03/listMembers.jsp";
+		
 		} else if (action.equals("/addMember.do")) {
 			String id = request.getParameter("id");
 			String pwd = request.getParameter("pwd");
@@ -58,13 +63,16 @@ public class MemberController extends HttpServlet {
 			memberDAO.addMember(memberVO);
 			request.setAttribute("msg", "addMember");
 			nextPage = "/member/listMembers.do";
+		
 		} else if (action.equals("/memberForm.do")) {
 			nextPage = "/test03/memberForm.jsp";
+		
 		}else if(action.equals("/modMemberForm.do")){
 		     String id=request.getParameter("id");
 		     MemberVO memInfo = memberDAO.findMember(id);
 		     request.setAttribute("memInfo", memInfo);
 		     nextPage="/test03/modMemberForm.jsp";
+		
 		}else if(action.equals("/modMember.do")){
 		     String id=request.getParameter("id");
 		     String pwd=request.getParameter("pwd");
@@ -74,11 +82,13 @@ public class MemberController extends HttpServlet {
 		     memberDAO.modMember(memberVO);
 		     request.setAttribute("msg", "modified");
 		     nextPage="/member/listMembers.do";
+		
 		}else if(action.equals("/delMember.do")){
 		     String id=request.getParameter("id");
 		     memberDAO.delMember(id);
 		     request.setAttribute("msg", "deleted");
 		     nextPage="/member/listMembers.do";
+		
 		}else {
 			List<MemberVO> membersList = memberDAO.listMembers();
 			request.setAttribute("membersList", membersList);

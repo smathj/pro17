@@ -25,8 +25,10 @@
      <td >제목</td>
      <td >작성일</td>
   </tr>
+  
 <c:choose>
-  <c:when test="${empty articlesList }" >
+
+  <c:when test="${empty articlesList }" > <%--글 없을때 --%>
     <tr  height="10">
       <td colspan="4">
          <p align="center">
@@ -35,31 +37,37 @@
       </td>  
     </tr>
   </c:when>
-  <c:when test="${!empty articlesList}" >
+  
+  <c:when test="${!empty articlesList}" > <%-- 글 있을대 --%>
+  
     <c:forEach  var="article" items="${articlesList }" varStatus="articleNum" >
      <tr align="center">
-	<td width="5%">${articleNum.count}</td>
-	<td width="10%">${article.id }</td>
-	<td align='left'  width="35%">
+	 <td width="5%">${articleNum.count}</td>	<%--글 번호 1부터 시작하는 용도 --%>
+	 <td width="10%">${article.id }</td>		<%-- 작성자 --%>
+	 <td align='left'  width="35%">
 	  <span style="padding-right:30px"></span>
 	   <c:choose>
 	      <c:when test='${article.level > 1 }'>  
-	         <c:forEach begin="1" end="${article.level }" step="1">
+	         <c:forEach begin="1" end="${article.level }" step="1"> <%-- "답변"일경우 여백주기 --%>
 	              <span style="padding-left:20px"></span>    
 	         </c:forEach>
 	         <span style="font-size:12px;">[답변]</span>
                    <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title}</a>
-	          </c:when>
-	          <c:otherwise>
+	      </c:when>
+	      
+          <c:otherwise>
 	            <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title }</a>
-	          </c:otherwise>
-	        </c:choose>
+          </c:otherwise>
+        </c:choose>
 	  </td>
 	  <td  width="10%"><fmt:formatDate value="${article.writeDate}" /></td> 
 	</tr>
     </c:forEach>
+    
      </c:when>
+     
     </c:choose>
+    
 </table>
 <a  class="cls1"  href="#"><p class="cls2">글쓰기</p></a>
 </body>

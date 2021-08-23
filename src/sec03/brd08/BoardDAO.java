@@ -36,24 +36,26 @@ public class BoardDAO {
 		try{
 		   conn = dataFactory.getConnection();
 		   String query ="SELECT * FROM ( "
-						+ "select ROWNUM  as recNum,"+"LVL,"
-							+"articleNO,"
-							+"parentNO,"
-							+"title,"
-							+"id,"
-							+"writeDate"
-				                  +" from (select LEVEL as LVL, "
-								+"articleNO,"
-								+"parentNO,"
-								+"title,"
-								+"id,"
-								 +"writeDate"
-							   +" from t_board" 
-							   +" START WITH  parentNO=0"
-							   +" CONNECT BY PRIOR articleNO = parentNO"
-							  +"  ORDER SIBLINGS BY articleNO DESC)"
-					+") "                        
-					+" where recNum between(?-1)*100+(?-1)*10+1 and (?-1)*100+?*10";                
+						+ "					select ROWNUM  as recNum,"
+						+"						   LVL,"
+						+"						   articleNO,"
+						+"						   parentNO,"
+						+"						   title,"
+						+"						   id,"
+						+"						   writeDate"
+				        +"					from (SELECT LEVEL as LVL, "
+        				+"                 				 articleNO,"
+						+"                  			 parentNO,"
+						+"                  			 title,"
+						+"                  			 id,"
+						+"                  			 writeDate"
+					    +"                   	  FROM t_board" 
+						+"                  	  START WITH  parentNO=0"
+						+"                   	  CONNECT BY PRIOR articleNO = parentNO"
+						+"                  	  ORDER SIBLINGS BY articleNO DESC"
+				 	    +"                       ) "                        
+				 	    +"              ) "                        
+				 	    +"WHERE recNum between(?-1)*100+(?-1)*10+1 and (?-1)*100+?*10";                
 		   System.out.println(query);
 		   pstmt= conn.prepareStatement(query);
 		   pstmt.setInt(1, section);
@@ -186,7 +188,7 @@ public class BoardDAO {
 			int parentNO = rs.getInt("parentNO");
 			String title = rs.getString("title");
 			String content = rs.getString("content");
-			String imageFileName = URLEncoder.encode(rs.getString("imageFileName"), "UTF-8"); //ÆÄÀÏÀÌ¸§¿¡ Æ¯¼ö¹®ÀÚ°¡ ÀÖÀ» °æ¿ì ÀÎÄÚµùÇÕ´Ï´Ù.
+			String imageFileName = URLEncoder.encode(rs.getString("imageFileName"), "UTF-8"); //ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ï¿½ï¿½ Æ¯ï¿½ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ï¿½Õ´Ï´ï¿½.
 			if(imageFileName.equals("null")) {
 				imageFileName = null;
 			}

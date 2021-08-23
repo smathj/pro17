@@ -18,55 +18,71 @@
    </style>
    <script  src="http://code.jquery.com/jquery-latest.min.js"></script> 
    <script type="text/javascript" >
-     function backToList(obj){
+     
+   
+   
+     // 리스트로 돌아가기
+   	 function backToList(obj){
 	    obj.action="${contextPath}/board/listArticles.do";
 	    obj.submit();
      }
- 
+ 	
+     
+     // form 수정하기
 	 function fn_enable(obj){
 		 document.getElementById("i_title").disabled=false;
 		 document.getElementById("i_content").disabled=false;
 		 document.getElementById("i_imageFileName").disabled=false;
-		 document.getElementById("tr_btn_modify").style.display="block";
-		 document.getElementById("tr_btn").style.display="none";
+		 document.getElementById("tr_btn_modify").style.display="block"; //  활성화 (보이기)
+		 document.getElementById("tr_btn").style.display="none";		 // 비활성화 (가리기)
 	 }
 	 
+     
+     // 수정 반영하기 ( 컨트롤러 호출 )
+     // parameter : form 태그의 name값 
 	 function fn_modify_article(obj){
-		 obj.action="${contextPath}/board/modArticle.do";
-		 obj.submit();
+		 obj.action="${contextPath}/board/modArticle.do";	// action 설정
+		 obj.submit();										// 해당 from , 컨트롤러 호출
 	 }
 	 
+     // 글 삭제하기 
 	 function fn_remove_article(url,articleNO){
-		 var form = document.createElement("form");
-		 form.setAttribute("method", "post");
-		 form.setAttribute("action", url);
-	     var articleNOInput = document.createElement("input");
-	     articleNOInput.setAttribute("type","hidden");
-	     articleNOInput.setAttribute("name","articleNO");
-	     articleNOInput.setAttribute("value", articleNO);
+		 var form = document.createElement("form");				// form 태그 생성
+		 form.setAttribute("method", "post");					// form 태그 method 설정
+		 form.setAttribute("action", url);						// form 태그 action 설정
 		 
-	     form.appendChild(articleNOInput);
-	     document.body.appendChild(form);
-	     form.submit();
+	     var articleNOInput = document.createElement("input");	// input 태그 생성
+	     articleNOInput.setAttribute("type","hidden");			// input 태그 type 설정
+	     articleNOInput.setAttribute("name","articleNO");		// input 태그 name 설정
+	     articleNOInput.setAttribute("value", articleNO);		// input 태그 value 설정
+		 
+	     form.appendChild(articleNOInput);						// form태그 내부에 input 태그 삽입
+	     document.body.appendChild(form);						// body 태그 내부에 form 태그 삽입
+	     form.submit();											// 해당 from , 컨트롤러 호출
 	 
 	 }
 	 
+     // 답글 쓰기
 	 function fn_reply_form(url, parentNO){
-		 var form = document.createElement("form");
-		 form.setAttribute("method", "post");
-		 form.setAttribute("action", url);
-	     var parentNOInput = document.createElement("input");
-	     parentNOInput.setAttribute("type","hidden");
-	     parentNOInput.setAttribute("name","parentNO");
-	     parentNOInput.setAttribute("value", parentNO);
+    	 
+		 var form = document.createElement("form");				// form 태그 생성
+		 form.setAttribute("method", "post");					// form 태그 method 설정
+		 form.setAttribute("action", url);						// form 태그 action 설정
 		 
-	     form.appendChild(parentNOInput);
-	     document.body.appendChild(form);
-		 form.submit();
+	     var parentNOInput = document.createElement("input");	// input 태그 생성	
+	     parentNOInput.setAttribute("type","hidden");			// input 태그 type 설정
+	     parentNOInput.setAttribute("name","parentNO");			// input 태그 name 설정
+	     parentNOInput.setAttribute("value", parentNO);			// input 태그 value 설정 = 부모글 번호
+		 
+	     form.appendChild(parentNOInput);						// form 태그 내부에 input 태그 삽입
+	     document.body.appendChild(form);						// body 태그 내부에 form 태그 삽입
+		 form.submit();											// 해당 from , 컨트롤러 호출		
 	 }
 	 
-	 function readURL(input) {
-	     if (input.files && input.files[0]) {
+     // 미리보기 
+	 function readURL(input) {									// this = input 태그
+	     if (input.files && input.files[0]) {					// 파일이 존재하면
+	    	 
 	         var reader = new FileReader();
 	         reader.onload = function (e) {
 	             $('#preview').attr('src', e.target.result);

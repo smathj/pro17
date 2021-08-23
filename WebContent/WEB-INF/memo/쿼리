@@ -1,0 +1,46 @@
+DROP TABLE t_Board CASCADE CONSTRAINTS;
+
+-- 게시판 테이블을 생성
+CREATE TABLE t_Board(
+	articleNo NUMBER(10) PRIMARY KEY,
+	parentNo number(10) DEFAULT 0,
+	title varchar2(500) NOT NULL,
+	content varchar2(4000),
+	imageFileName varchar2(100),
+	writedate DATE DEFAULT sysdate NOT NULL,
+	id varchar2(10),
+	CONSTRAINT FK_ID FOREIGN KEY(id) -- id 칼럼을 회원 테이블의 id 컬럼에 외래키로 저장
+	REFERENCES t_member(id)
+);
+
+-- 테이블에 테스트 글을 추가
+INSERT INTO SCOTT.T_BOARD
+(ARTICLENO, PARENTNO, TITLE, CONTENT, IMAGEFILENAME, WRITEDATE, ID)
+VALUES(1, 0, '테스트글입니다.', '테스트글입니다', null, sysdate , 'hong');
+
+INSERT INTO SCOTT.T_BOARD
+(ARTICLENO, PARENTNO, TITLE, CONTENT, IMAGEFILENAME, WRITEDATE, ID)
+VALUES(2, 0, '안녕하세요.', '상품 후기입니다', null, sysdate , 'hong');
+
+INSERT INTO SCOTT.T_BOARD
+(ARTICLENO, PARENTNO, TITLE, CONTENT, IMAGEFILENAME, WRITEDATE, ID)
+VALUES(3, 2, '답변입니다.', '상품 후기에 대한 답변입니다', null, sysdate , 'hong');
+
+INSERT INTO SCOTT.T_BOARD
+(ARTICLENO, PARENTNO, TITLE, CONTENT, IMAGEFILENAME, WRITEDATE, ID)
+VALUES(5, 3, '답변입니다.', '상품 좋습니다', null, sysdate , 'lee');
+
+INSERT INTO SCOTT.T_BOARD
+(ARTICLENO, PARENTNO, TITLE, CONTENT, IMAGEFILENAME, WRITEDATE, ID)
+VALUES(4, 0, '김유신입니다.', '김유신 테스트글입니다', null, sysdate , 'kim');
+
+INSERT INTO SCOTT.T_BOARD
+(ARTICLENO, PARENTNO, TITLE, CONTENT, IMAGEFILENAME, WRITEDATE, ID)
+VALUES(6, 2, '상품 후기입니다..', '이순신씨의 상품 사용 후기를 올립니다!!', null, sysdate , 'lee');
+
+
+SELECT * 
+FROM T_BOARD;
+
+
+

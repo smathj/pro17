@@ -100,9 +100,12 @@ public class BoardDAO {
 			pstmt.setString(4, content);
 			pstmt.setString(5, imageFileName);
 			pstmt.setString(6, id);
+			
 			pstmt.executeUpdate();
+			
 			pstmt.close();
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

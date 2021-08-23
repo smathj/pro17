@@ -17,9 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/mem.do")
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
 	MemberDAO memberDAO;
 
 	public void init() throws ServletException {
+		
+		System.out.println("---------------------------");
+		System.out.println("MemberController Servlet 최초 호출");
+		System.out.println("MemberDAO 객체 생성");
 		memberDAO = new MemberDAO();
 	}
 
@@ -29,6 +34,9 @@ public class MemberController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		System.out.println("---------------------------");
+		System.out.println("MemberController Get 호출");
 		doHandle(request, response);
 	}
 
@@ -38,14 +46,23 @@ public class MemberController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		System.out.println("---------------------------");
+		System.out.println("MemberController Post 호출");
 		doHandle(request, response);
 	}
 
 	private void doHandle(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		System.out.println("---------------------------");
+		System.out.println("MemberController 동작");
+		
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
+		
 		List<MemberVO> membersList = memberDAO.listMembers();
 		request.setAttribute("membersList", membersList);
+		
 		RequestDispatcher dispatch = request.getRequestDispatcher("/test01/listMembers.jsp");
 		dispatch.forward(request, response);
 	}

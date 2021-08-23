@@ -11,6 +11,7 @@ public class BoardService {
 		boardDAO = new BoardDAO();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map listArticles(Map<String, Integer> pagingMap) {
 		Map articlesMap = new HashMap();
 		List<ArticleVO> articlesList = boardDAO.selectAllArticles(pagingMap);
@@ -21,6 +22,7 @@ public class BoardService {
 		return articlesMap;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ArticleVO> listArticles() {
 		List<ArticleVO> articlesList = boardDAO.selectAllArticles();
 		return articlesList;
