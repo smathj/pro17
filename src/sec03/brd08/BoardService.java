@@ -13,11 +13,16 @@ public class BoardService {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map listArticles(Map<String, Integer> pagingMap) {
+		
 		Map articlesMap = new HashMap();
+		
 		List<ArticleVO> articlesList = boardDAO.selectAllArticles(pagingMap);
+		
 		int totArticles = boardDAO.selectTotArticles();
-		articlesMap.put("articlesList", articlesList);
+		
+		articlesMap.put("articlesList", articlesList);		// articlesList.articlesList에 게시글 들어있다
 		articlesMap.put("totArticles", totArticles);
+		
 		//articlesMap.put("totArticles", 170);
 		return articlesMap;
 	}

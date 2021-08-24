@@ -6,14 +6,14 @@ import java.net.URLEncoder;
 import java.sql.Date;
 
 public class ArticleVO {
-	private int level;
-	private int articleNO;
-	private int parentNO;
-	private String title;
-	private String content;
-	private String imageFileName;
-	private String id;
-	private Date writeDate;
+	private int level;				// 오라클 가상의 컬럼으로 , 부모 글은 1 (답글형을위해)
+	private int articleNO;			// 글번호
+	private int parentNO;			// 부모 글 번호
+	private String title;			// 글 제목
+	private String content;			// 글 내용
+	private String imageFileName;	// 이미지 파일 이름
+	private String id;				// 작성자 ID
+	private Date writeDate;			// 작성일
 	
 	public ArticleVO() {
 		
@@ -98,7 +98,7 @@ public class ArticleVO {
 	public void setImageFileName(String imageFileName) {
 		try {
 			if(imageFileName!=null && imageFileName.length()!=0) {
-				this.imageFileName = URLEncoder.encode(imageFileName, "UTF-8");  //�����̸��� Ư�����ڰ� ���� ��� ���ڵ��մϴ�.
+				this.imageFileName = URLEncoder.encode(imageFileName, "UTF-8");  //�����̸��� Ư�����ڰ� ���� ��� ���ڵ��մϴ�.
 			}
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();

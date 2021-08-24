@@ -36,25 +36,26 @@ public class BoardDAO {
 		try{
 		   conn = dataFactory.getConnection();
 		   String query ="SELECT * FROM ( "
-						+ "					select ROWNUM  as recNum,"
-						+"						   LVL,"
-						+"						   articleNO,"
-						+"						   parentNO,"
-						+"						   title,"
-						+"						   id,"
-						+"						   writeDate"
-				        +"					from (SELECT LEVEL as LVL, "
-        				+"                 				 articleNO,"
-						+"                  			 parentNO,"
-						+"                  			 title,"
-						+"                  			 id,"
-						+"                  			 writeDate"
-					    +"                   	  FROM t_board" 
-						+"                  	  START WITH  parentNO=0"
-						+"                   	  CONNECT BY PRIOR articleNO = parentNO"
-						+"                  	  ORDER SIBLINGS BY articleNO DESC"
-				 	    +"                       ) "                        
-				 	    +"              ) "                        
+						+                 "select ROWNUM  as recNum,"
+						+                        "LVL,"
+						+                        "articleNO,"
+						+                        "parentNO,"
+						+                        "title,"
+						+                        "id,"
+						+                        "writeDate"
+				        +                 "from ("
+				        +                        "SELECT LEVEL as LVL, "
+        				+							   "articleNO,"
+						+                              "parentNO,"
+						+                              "title,"
+						+                              "id,"
+						+                              "writeDate"
+					    +                         "FROM t_board" 
+						+                         "START WITH  parentNO=0"
+						+                         "CONNECT BY PRIOR articleNO = parentNO"
+						+                         "ORDER SIBLINGS BY articleNO DESC"
+				 	    +						")"                        
+				 	    +				")"                        
 				 	    +"WHERE recNum between(?-1)*100+(?-1)*10+1 and (?-1)*100+?*10";                
 		   System.out.println(query);
 		   pstmt= conn.prepareStatement(query);
@@ -88,25 +89,39 @@ public class BoardDAO {
 	  return articlesList;
     } 
 	
+	@SuppressWarnings("rawtypes")
 	public List selectAllArticles() {
+		
 		List articlesList = new ArrayList();
 		try {
 			conn = dataFactory.getConnection();
-			String query = "SELECT LEVEL,articleNO,parentNO,title,content,id,writeDate" + " from t_board"
-					+ " START WITH  parentNO=0" + " CONNECT BY PRIOR articleNO=parentNO"
-					+ " ORDER SIBLINGS BY articleNO DESC";
+			
+			String query = "SELECT LEVEL,articleNO,parentNO,title,content,id,writeDate" 
+			             + "FROM t_board"
+					     + "START WITH  parentNO=0" 
+			             + "CONNECT BY PRIOR articleNO=parentNO"
+					     + "ORDER SIBLINGS BY articleNO DESC";
+			
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
+			
 			ResultSet rs = pstmt.executeQuery();
+			
 			while (rs.next()) {
+				
 				int level = rs.getInt("level");
 				int articleNO = rs.getInt("articleNO");
 				int parentNO = rs.getInt("parentNO");
+				
 				String title = rs.getString("title");
 				String content = rs.getString("content");
 				String id = rs.getString("id");
+				
 				Date writeDate = rs.getDate("writeDate");
+				
 				ArticleVO article = new ArticleVO();
+				
 				article.setLevel(level);
 				article.setArticleNO(articleNO);
 				article.setParentNO(parentNO);
@@ -114,11 +129,14 @@ public class BoardDAO {
 				article.setContent(content);
 				article.setId(id);
 				article.setWriteDate(writeDate);
+				
 				articlesList.add(article);
 			}
+			
 			rs.close();
 			pstmt.close();
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -128,16 +146,22 @@ public class BoardDAO {
 
 	private int getNewArticleNO() {
 		try {
+			
 			conn = dataFactory.getConnection();
+			
 			String query = "SELECT  max(articleNO) from t_board ";
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
+			
 			ResultSet rs = pstmt.executeQuery(query);
+			
 			if (rs.next())
 				return (rs.getInt(1) + 1);
 			rs.close();
 			pstmt.close();
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -145,18 +169,24 @@ public class BoardDAO {
 	}
 
 	public int insertNewArticle(ArticleVO article) {
+		
 		int articleNO = getNewArticleNO();
 		try {
+			
 			conn = dataFactory.getConnection();
+			
 			int parentNO = article.getParentNO();
+			
 			String title = article.getTitle();
 			String content = article.getContent();
 			String id = article.getId();
 			String imageFileName = article.getImageFileName();
 			String query = "INSERT INTO t_board (articleNO, parentNO, title, content, imageFileName, id)"
-					+ " VALUES (?, ? ,?, ?, ?, ?)";
+					     + " VALUES (?, ? ,?, ?, ?, ?)";
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
+			
 			pstmt.setInt(1, articleNO);
 			pstmt.setInt(2, parentNO);
 			pstmt.setString(3, title);
@@ -164,8 +194,10 @@ public class BoardDAO {
 			pstmt.setString(5, imageFileName);
 			pstmt.setString(6, id);
 			pstmt.executeUpdate();
+			
 			pstmt.close();
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -177,18 +209,26 @@ public class BoardDAO {
 		ArticleVO article = new ArticleVO();
 		try {
 			conn = dataFactory.getConnection();
-			String query = "select articleNO,parentNO,title,content, NVL(imageFileName, 'null') as imageFileName, id, writeDate" + " from t_board"
-					+ " where articleNO=?";
+			String query = "select articleNO,parentNO,title,content, NVL(imageFileName, 'null') as imageFileName, id, writeDate" 
+						 + " from t_board"
+						 + " where articleNO=?";
+			
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, articleNO);
+			
 			ResultSet rs = pstmt.executeQuery();
+			
 			rs.next();
+			
 			int _articleNO = rs.getInt("articleNO");
 			int parentNO = rs.getInt("parentNO");
+			
 			String title = rs.getString("title");
 			String content = rs.getString("content");
 			String imageFileName = URLEncoder.encode(rs.getString("imageFileName"), "UTF-8"); //�����̸��� Ư�����ڰ� ���� ��� ���ڵ��մϴ�.
+			
 			if(imageFileName.equals("null")) {
 				imageFileName = null;
 			}
@@ -203,9 +243,11 @@ public class BoardDAO {
 			article.setImageFileName(imageFileName);
 			article.setId(id);
 			article.setWriteDate(writeDate);
+			
 			rs.close();
 			pstmt.close();
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -213,29 +255,36 @@ public class BoardDAO {
 	}
 
 	public void updateArticle(ArticleVO article) {
+		
 		int articleNO = article.getArticleNO();
+		
 		String title = article.getTitle();
 		String content = article.getContent();
 		String imageFileName = article.getImageFileName();
+		
 		try {
 			conn = dataFactory.getConnection();
 			String query = "update t_board  set title=?,content=?";
 			if (imageFileName != null && imageFileName.length() != 0) {
-				query += ",imageFileName=?";
+				   query += ",imageFileName=?";
 			}
-			query += " where articleNO=?";
+				   query += " where articleNO=?";
 
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
 			pstmt.setString(1, title);
 			pstmt.setString(2, content);
+			
 			if (imageFileName != null && imageFileName.length() != 0) {
 				pstmt.setString(3, imageFileName);
 				pstmt.setInt(4, articleNO);
 			} else {
 				pstmt.setInt(3, articleNO);
 			}
+			
 			pstmt.executeUpdate();
+			
 			pstmt.close();
 			conn.close();
 		} catch (Exception e) {
@@ -245,16 +294,21 @@ public class BoardDAO {
 
 	public void deleteArticle(int articleNO) {
 		try {
+			
 			conn = dataFactory.getConnection();
-			String query = "DELETE FROM t_board ";
-			query += " WHERE articleNO in (";
-			query += "  SELECT articleNO FROM  t_board ";
-			query += " START WITH articleNO = ?";
-			query += " CONNECT BY PRIOR  articleNO = parentNO )";
+			
+			String query  = "DELETE FROM t_board ";
+			       query += "WHERE articleNO in (";
+			       query += "SELECT articleNO FROM  t_board ";
+			       query += "START WITH articleNO = ?";
+			       query += "CONNECT BY PRIOR  articleNO = parentNO )";
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
+			
 			pstmt.setInt(1, articleNO);
 			pstmt.executeUpdate();
+			
 			pstmt.close();
 			conn.close();
 		} catch (Exception e) {
@@ -263,22 +317,31 @@ public class BoardDAO {
 	}
 
 	public List<Integer> selectRemovedArticles(int articleNO) {
+		
 		List<Integer> articleNOList = new ArrayList<Integer>();
+		
 		try {
 			conn = dataFactory.getConnection();
-			String query = "SELECT articleNO FROM  t_board  ";
-			query += " START WITH articleNO = ?";
-			query += " CONNECT BY PRIOR  articleNO = parentNO";
+			
+			String query  = "SELECT articleNO FROM  t_board  ";
+			       query += "START WITH articleNO = ?";
+			       query += "CONNECT BY PRIOR  articleNO = parentNO";
+			
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, articleNO);
+			
 			ResultSet rs = pstmt.executeQuery();
+			
 			while (rs.next()) {
 				articleNO = rs.getInt("articleNO");
 				articleNOList.add(articleNO);
 			}
+			
 			pstmt.close();
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -286,17 +349,25 @@ public class BoardDAO {
 	}
 
 	public int selectTotArticles() {
+		
 		try {
+			
 			conn = dataFactory.getConnection();
+			
 			String query = "select count(articleNO) from t_board ";
 			System.out.println(query);
+			
 			pstmt = conn.prepareStatement(query);
+			
 			ResultSet rs = pstmt.executeQuery();
+			
 			if (rs.next())
 				return (rs.getInt(1));
+			
 			rs.close();
 			pstmt.close();
 			conn.close();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

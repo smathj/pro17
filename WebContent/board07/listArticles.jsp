@@ -3,11 +3,11 @@
     isELIgnored="false" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>    
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
-<c:set  var="articlesList"  value="${articlesMap.articlesList}" />
-<c:set  var="totArticles"  value="${articlesMap.totArticles}" />
-<c:set  var="section"  value="${articlesMap.section}" />
-<c:set  var="pageNum"  value="${articlesMap.pageNum}" />
+<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />	<!-- 컨텍스트 경로 -->
+<c:set  var="articlesList"  value="${articlesMap.articlesList}" />			<!-- 게시글 -->
+<c:set  var="totArticles"  value="${articlesMap.totArticles}" />			<!-- 전체 게시글 수 --> 
+<c:set  var="section"  value="${articlesMap.section}" />					<!-- 섹션 -->
+<c:set  var="pageNum"  value="${articlesMap.pageNum}" />					<!-- 페이지넘버 -->
 
 <%
   request.setCharacterEncoding("UTF-8");
@@ -33,7 +33,7 @@
      <td >작성일</td>
   </tr>
 <c:choose>
-  <c:when test="${empty articlesList}" >
+  <c:when test="${empty articlesList}" >	<!-- 글없을때 -->
     <tr  height="10">
       <td colspan="4">
          <p align="center">
@@ -42,28 +42,37 @@
       </td>  
     </tr>
   </c:when>
-  <c:when test="${!empty articlesList}" >
+  
+  <c:when test="${!empty articlesList}" >	<!-- 글있을떄 -->
     <c:forEach  var="article" items="${articlesList }" varStatus="articleNum" >
-     <tr align="center">
-	<td width="5%">${articleNum.count}</td>
-	<td width="10%">${article.id }</td>
-	<td align='left'  width="35%">
-	    <span style="padding-right:30px"></span>    
-	   <c:choose>
-	      <c:when test='${article.level > 1 }'>  
-	         <c:forEach begin="1" end="${article.level }" step="1">
-	             <span style="padding-left:10px"></span> 
-	         </c:forEach>
-	         <span style="font-size:12px;">[답변]</span>
-                   <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title}</a>
+	    <tr align="center">
+		
+		<td width="5%">${articleNum.count}</td>	<!-- 반복문 번호 (글 번호로 사용) -->
+		
+		<td width="10%">${article.id }</td>		<!-- 작성자 -->
+		
+		<td align='left'  width="35%">
+		    <span style="padding-right:30px"></span>
+		        
+		   <c:choose>
+		      
+		      <c:when test='${article.level > 1 }'>  
+		         <c:forEach begin="1" end="${article.level }" step="1">
+		             <span style="padding-left:10px"></span> 
+		         </c:forEach>
+		         <span style="font-size:12px;">[답변]</span>
+	                   <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title}</a>
 	          </c:when>
+	          
+	          
 	          <c:otherwise>
-	            <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title }</a>
+		            <a class='cls1' href="${contextPath}/board/viewArticle.do?articleNO=${article.articleNO}">${article.title }</a>
 	          </c:otherwise>
 	        </c:choose>
-	  </td>
-	  <td  width="10%"><fmt:formatDate value="${article.writeDate}" /></td> 
-	</tr>
+	        
+		  </td>
+		  <td  width="10%"><fmt:formatDate value="${article.writeDate}" /></td> 
+		</tr>
     </c:forEach>
      </c:when>
     </c:choose>

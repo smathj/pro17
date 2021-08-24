@@ -94,7 +94,7 @@ public class BoardController extends HttpServlet {
 				articlesMap.put("pageNum", pageNum);								// 맵에 추가로 pageNum 담기
 				
 				request.setAttribute("articlesMap", articlesMap);					// Request에 articlesMap 바인딩
-				nextPage = "/board07/ listArticles.jsp";							// view 페이지 지정
+				nextPage = "/board07/listArticles.jsp";								// view 페이지 지정
 				
 			// 게시글 리스트 컨트롤러	
 			}else if(action.equals("/listArticles.do")){
